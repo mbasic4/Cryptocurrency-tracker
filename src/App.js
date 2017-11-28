@@ -82,7 +82,21 @@ class App extends Component {
 			});
 		}
 		else {
-			fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${this.state.selectedCoin}&tsym=EUR&limit=${this.state.limit}&e=CCCAGG&toTs=${this.state.timeTo}`)
+			var reactContainer = this
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+				   let res = JSON.parse(xhttp.responseText)
+				   const formatted = res.Data.map(day => {
+						var dateMilisec = day.time*1000
+						return {date: dateMilisec, open: day.open, high: day.high, low: day.low, close: day.close}
+					})
+					reactContainer.setState({selectedCalcCoin: selectedCalcCoin, cryptoDataList: formatted})
+				}
+			};
+			xhttp.open("GET", `https://min-api.cryptocompare.com/data/histoday?fsym=${this.state.selectedCoin}&tsym=EUR&limit=${this.state.limit}&e=CCCAGG&toTs=${this.state.timeTo}`, true);
+			xhttp.send();
+			/*fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${this.state.selectedCoin}&tsym=EUR&limit=${this.state.limit}&e=CCCAGG&toTs=${this.state.timeTo}`)
 			.then(res => res.json())
 			.then(res => {
 				const formatted = res.Data.map(day => {
@@ -90,7 +104,7 @@ class App extends Component {
 					return {date: dateMilisec, open: day.open, high: day.high, low: day.low, close: day.close}
 				})
 				this.setState({selectedCalcCoin: selectedCalcCoin, cryptoDataList: formatted})	
-			})
+			})*/
 		}
 	}
 
@@ -164,7 +178,7 @@ class App extends Component {
 								}
 								}
 							)}
-							<button className="select_btn" onClick={() => this.setState({showDiv: !this.state.showDiv})}>Cryptocurrency <i className="ionicons ion-arrow-down-b"></i></button>
+							<button className="select_btn" onClick={() => this.setState({showDiv: !this.state.showDiv})}>Cryptocurrency <i className="glyphicon glyphicon-menu-down" style={{fontSize:"0.8em"}}></i></button>
 						</div>
 						<div className={(this.state.showDiv) ? "drop_div" : "hide_div"}>
 							<ul className="ul_style">
