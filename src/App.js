@@ -82,21 +82,7 @@ class App extends Component {
 			});
 		}
 		else {
-			var reactContainer = this
-			var xhttp = new XMLHttpRequest();
-			xhttp.onreadystatechange = function() {
-				if (this.readyState == 4 && this.status == 200) {
-				   let res = JSON.parse(xhttp.responseText)
-				   const formatted = res.Data.map(day => {
-						var dateMilisec = day.time*1000
-						return {date: dateMilisec, open: day.open, high: day.high, low: day.low, close: day.close}
-					})
-					reactContainer.setState({selectedCalcCoin: selectedCalcCoin, cryptoDataList: formatted})
-				}
-			};
-			xhttp.open("GET", `https://min-api.cryptocompare.com/data/histoday?fsym=${this.state.selectedCoin}&tsym=EUR&limit=${this.state.limit}&e=CCCAGG&toTs=${this.state.timeTo}`, true);
-			xhttp.send();
-			/*fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${this.state.selectedCoin}&tsym=EUR&limit=${this.state.limit}&e=CCCAGG&toTs=${this.state.timeTo}`)
+			fetch(`https://min-api.cryptocompare.com/data/histoday?fsym=${this.state.selectedCoin}&tsym=EUR&limit=${this.state.limit}&e=CCCAGG&toTs=${this.state.timeTo}`)
 			.then(res => res.json())
 			.then(res => {
 				const formatted = res.Data.map(day => {
@@ -104,7 +90,7 @@ class App extends Component {
 					return {date: dateMilisec, open: day.open, high: day.high, low: day.low, close: day.close}
 				})
 				this.setState({selectedCalcCoin: selectedCalcCoin, cryptoDataList: formatted})	
-			})*/
+			})
 		}
 	}
 
@@ -123,8 +109,6 @@ class App extends Component {
 				}	
 			}
 			this.setState({defaultList: defaultList})
-			console.log(res.Data)
-			console.log(defaultList)
 		})
 	}
 
@@ -192,11 +176,10 @@ class App extends Component {
 						<div style={{marginTop:"1em"}}>
 							<div className="date_text">SELECT A DATE RANGE:</div>
 							<DateRange
-								/*onInit={this.handleSelect}*/
 								onChange={this.handleSelect}
 							/>
 						</div>
-						<button className="submit_btn" onClick={this.calculateSMA}>Calculate</button>
+						<button className="calculate_btn" onClick={this.calculateSMA}>Calculate</button>
 					  </div>
 					</Col>
 					<Col md={8}>
