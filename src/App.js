@@ -196,7 +196,7 @@ class App extends Component {
 								onChange={this.handleSelect}
 							/>
 						</div>
-						<button className="submit_btn" type="sumbit" onClick={this.calculateSMA}>Calculate</button>
+						<button className="submit_btn" onClick={this.calculateSMA}>Calculate</button>
 					  </div>
 					</Col>
 					<Col md={8}>
