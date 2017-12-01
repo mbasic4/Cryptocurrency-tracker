@@ -24,7 +24,6 @@ class App extends Component {
 	state = {
 		defaultList: [],
 		selectedCoin: "",
-		selectedCalcCoin: "",
 		timeTo: 0,
 		limit: 0,
 		cryptoDataList: [],
@@ -56,7 +55,6 @@ class App extends Component {
 
 	/*Gets all the prices needed for calculation of SMA, and arranges them in the right order*/
 	calculateSMA=() => {
-		var selectedCalcCoin = this.state.selectedCoin
 		//checks that all values are valid before submitting
 		if (this.state.selectedCoin === "" && this.state.limit < 5) {
 			swal({
@@ -90,7 +88,7 @@ class App extends Component {
 					var dateMilisec = day.time*1000
 					return {date: dateMilisec, open: day.open, high: day.high, low: day.low, close: day.close}
 				})
-				this.setState({selectedCalcCoin: selectedCalcCoin, cryptoDataList: formatted})	
+				this.setState({cryptoDataList: formatted})	
 			})
 		}
 	}
@@ -166,7 +164,7 @@ class App extends Component {
 									</div>
 								
 							}
-							<button className="select_btn" onClick={() => this.setState({showDiv: !this.state.showDiv})}>Cryptocurrency <i className="ionicons ion-arrow-down-b"></i></button>
+							<button className="select_btn" onClick={() => this.setState({showDiv: !this.state.showDiv})}>Cryptocurrency <i className="glyphicon glyphicon-menu-down" style={{fontSize:"0.8em"}}></i></button>
 						</div>
 						<div className={(this.state.showDiv) ? "drop_div" : "hide_div"}>
 							<ul className="ul_style">
@@ -185,7 +183,7 @@ class App extends Component {
 								maxDate={moment()}
 							/>
 						</div>
-						<button className="submit_btn" type="sumbit" onClick={this.calculateSMA}>Calculate</button>
+						<button className="calculate_btn" type="sumbit" onClick={this.calculateSMA}>Calculate</button>
 					  </div>
 					</Col>
 					<Col md={8}>
