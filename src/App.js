@@ -14,6 +14,7 @@ import { fitWidth } from 'react-stockcharts/lib/helper';
 import { last } from 'react-stockcharts/lib/utils';
 import swal from 'sweetalert2';
 
+
 import logo from './7.png';
 import logo_back from './7_180.png';
 import {Grid, Row, Col} from 'react-bootstrap';
@@ -39,7 +40,7 @@ class App extends Component {
 		// Range - an object with two keys: 'startDate' and 'endDate' which are Momentjs objects.
 		var secStartDate = moment.utc((range.startDate._d).toLocaleDateString())/1000;
 		var secEndDate = moment.utc((range.endDate._d).toLocaleDateString())/1000;
-		var currentTime = new Date().getTime();
+		console.log(secEndDate);
 		
 		var limit = (secEndDate - secStartDate)/86400;
 		if (limit < 5 && limit !== 0) {
@@ -109,6 +110,8 @@ class App extends Component {
 				}	
 			}
 			this.setState({defaultList: defaultList})
+			console.log(res.Data)
+			console.log(defaultList)
 		})
 	}
 
@@ -132,6 +135,8 @@ class App extends Component {
 	  const end = xAccessor(data[Math.max(0, data.length - 150)]);
 	  const xExtents = [start, end];
 		
+	  const currentCoin = this.state.defaultList.find(coin => coin.Name === this.state.selectedCoin)
+		
       return (
       <div className="App">
         <header className="App-header">
@@ -153,16 +158,15 @@ class App extends Component {
 					<Col md={4}>
 					  <div>
 						<div className="dropdown_container">
-							{this.state.defaultList.map(coin =>
-								{if (coin.Name === this.state.selectedCoin) {
-									return(<div className="selected_coin" key={coin.Id}>
-											<img src={`https://www.cryptocompare.com${coin.ImageUrl}`} alt={coin.Name} style={{width:"45px", height:"45px"}}/>
-											<span className="coin_text"> {coin.Name}</span>
-										</div>)
-								}
-								}
-							)}
-							<button className="select_btn" onClick={() => this.setState({showDiv: !this.state.showDiv})}>Cryptocurrency <i className="glyphicon glyphicon-menu-down" style={{fontSize:"0.8em"}}></i></button>
+							{currentCoin &&
+								
+									<div className="selected_coin" key={currentCoin.Id}>
+										<img src={`https://www.cryptocompare.com${currentCoin.ImageUrl}`} alt={currentCoin.Name} style={{width:"45px", height:"45px"}}/>
+										<span className="coin_text"> {currentCoin.Name}</span>
+									</div>
+								
+							}
+							<button className="select_btn" onClick={() => this.setState({showDiv: !this.state.showDiv})}>Cryptocurrency <i className="ionicons ion-arrow-down-b"></i></button>
 						</div>
 						<div className={(this.state.showDiv) ? "drop_div" : "hide_div"}>
 							<ul className="ul_style">
@@ -176,11 +180,12 @@ class App extends Component {
 						<div style={{marginTop:"1em"}}>
 							<div className="date_text">SELECT A DATE RANGE:</div>
 							<DateRange
+								/*onInit={this.handleSelect}*/
 								onChange={this.handleSelect}
 								maxDate={moment()}
 							/>
 						</div>
-						<button className="calculate_btn" onClick={this.calculateSMA}>Calculate</button>
+						<button className="submit_btn" type="sumbit" onClick={this.calculateSMA}>Calculate</button>
 					  </div>
 					</Col>
 					<Col md={8}>
@@ -227,32 +232,30 @@ class App extends Component {
 						</ChartCanvas>
 						}
 						
-						{this.state.defaultList.map(coin =>
-							{if (this.state.cryptoDataList.length && coin.Name === this.state.selectedCalcCoin) {
-								return (<table>
-										  <thead>
-											<tr>
-												<th><img src={`https://www.cryptocompare.com${coin.ImageUrl}`} alt={coin.Name} style={{width:"40px", height:"40px"}}/><span className="coin_text"> {coin.Name}</span></th>
-												<th>OPEN PRICE(EUR)</th> 
-												<th>HIGH PRICE(EUR)</th>
-												<th>LOW PRICE(EUR)</th> 
-												<th>CLOSE PRICE(EUR)</th>
-											</tr>
-										  </thead>
-										  <tbody>
-											{this.state.cryptoDataList.map(element =>
-											<tr>
-												<td className="coin_text">{new Date(element.date).toLocaleDateString()}</td>
-												<td>{element.open.toFixed(2)}</td>
-												<td>{element.high.toFixed(2)}</td>
-												<td>{element.low.toFixed(2)}</td>
-												<td>{element.close.toFixed(2)}</td>
-											</tr>							 
-											)} 
-										 </tbody>
-									</table>)
-							}}	
-						)}
+						{this.state.cryptoDataList.length > 0 &&	
+							<table>
+								<thead>
+									<tr>
+										<th><img src={`https://www.cryptocompare.com${currentCoin.ImageUrl}`} alt={currentCoin.Name} style={{width:"40px", height:"40px"}}/><span className="coin_text"> {currentCoin.Name}</span></th>
+										<th>OPEN PRICE(EUR)</th> 
+										<th>HIGH PRICE(EUR)</th>
+										<th>LOW PRICE(EUR)</th> 
+										<th>CLOSE PRICE(EUR)</th>
+									</tr>
+								</thead>
+								<tbody>
+									{this.state.cryptoDataList.map(element =>
+									<tr key={element.date}>
+										<td className="coin_text">{new Date(element.date).toLocaleDateString()}</td>
+										<td>{element.open.toFixed(2)}</td>
+										<td>{element.high.toFixed(2)}</td>
+										<td>{element.low.toFixed(2)}</td>
+										<td>{element.close.toFixed(2)}</td>
+									</tr>							 
+									)} 
+								</tbody>
+							</table>		
+						}
 						
 					</Col>
 				</Row>
