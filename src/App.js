@@ -14,7 +14,6 @@ import { fitWidth } from 'react-stockcharts/lib/helper';
 import { last } from 'react-stockcharts/lib/utils';
 import swal from 'sweetalert2';
 
-
 import logo from './7.png';
 import logo_back from './7_180.png';
 import {Grid, Row, Col} from 'react-bootstrap';
@@ -40,6 +39,7 @@ class App extends Component {
 		// Range - an object with two keys: 'startDate' and 'endDate' which are Momentjs objects.
 		var secStartDate = moment.utc((range.startDate._d).toLocaleDateString())/1000;
 		var secEndDate = moment.utc((range.endDate._d).toLocaleDateString())/1000;
+		var currentTime = new Date().getTime();
 		
 		var limit = (secEndDate - secStartDate)/86400;
 		if (limit < 5 && limit !== 0) {
@@ -177,6 +177,7 @@ class App extends Component {
 							<div className="date_text">SELECT A DATE RANGE:</div>
 							<DateRange
 								onChange={this.handleSelect}
+								maxDate={moment()}
 							/>
 						</div>
 						<button className="calculate_btn" onClick={this.calculateSMA}>Calculate</button>
