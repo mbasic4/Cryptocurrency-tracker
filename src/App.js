@@ -24,6 +24,7 @@ class App extends Component {
 	state = {
 		defaultList: [],
 		selectedCoin: "",
+		calcCoin: "",
 		timeTo: 0,
 		limit: 0,
 		cryptoDataList: [],
@@ -55,6 +56,7 @@ class App extends Component {
 
 	/*Gets all the prices needed for calculation of SMA, and arranges them in the right order*/
 	calculateSMA=() => {
+		var calcCoin = this.state.selectedCoin
 		//checks that all values are valid before submitting
 		if (this.state.selectedCoin === "" && this.state.limit < 5) {
 			swal({
@@ -88,7 +90,7 @@ class App extends Component {
 					var dateMilisec = day.time*1000
 					return {date: dateMilisec, open: day.open, high: day.high, low: day.low, close: day.close}
 				})
-				this.setState({cryptoDataList: formatted})	
+				this.setState({calcCoin: calcCoin, cryptoDataList: formatted})	
 			})
 		}
 	}
@@ -133,7 +135,8 @@ class App extends Component {
 	  const end = xAccessor(data[Math.max(0, data.length - 150)]);
 	  const xExtents = [start, end];
 		
-	  const currentCoin = this.state.defaultList.find(coin => coin.Name === this.state.selectedCoin)
+	  const currentSelectedCoin = this.state.defaultList.find(coin => coin.Name === this.state.selectedCoin)
+	  const currentCalcCoin = this.state.defaultList.find(currcoin => currcoin.Name === this.state.calcCoin)
 		
       return (
       <div className="App">
@@ -156,11 +159,11 @@ class App extends Component {
 					<Col md={4}>
 					  <div>
 						<div className="dropdown_container">
-							{currentCoin &&
+							{currentSelectedCoin &&
 								
-									<div className="selected_coin" key={currentCoin.Id}>
-										<img src={`https://www.cryptocompare.com${currentCoin.ImageUrl}`} alt={currentCoin.Name} style={{width:"45px", height:"45px"}}/>
-										<span className="coin_text"> {currentCoin.Name}</span>
+									<div className="selected_coin" key={currentSelectedCoin.Id}>
+										<img src={`https://www.cryptocompare.com${currentSelectedCoin.ImageUrl}`} alt={currentSelectedCoin.Name} style={{width:"45px", height:"45px"}}/>
+										<span className="coin_text"> {currentSelectedCoin.Name}</span>
 									</div>
 								
 							}
@@ -178,12 +181,11 @@ class App extends Component {
 						<div style={{marginTop:"1em"}}>
 							<div className="date_text">SELECT A DATE RANGE:</div>
 							<DateRange
-								/*onInit={this.handleSelect}*/
 								onChange={this.handleSelect}
 								maxDate={moment()}
 							/>
 						</div>
-						<button className="calculate_btn" type="sumbit" onClick={this.calculateSMA}>Calculate</button>
+						<button className="calculate_btn" onClick={this.calculateSMA}>Calculate</button>
 					  </div>
 					</Col>
 					<Col md={8}>
@@ -234,7 +236,7 @@ class App extends Component {
 							<table>
 								<thead>
 									<tr>
-										<th><img src={`https://www.cryptocompare.com${currentCoin.ImageUrl}`} alt={currentCoin.Name} style={{width:"40px", height:"40px"}}/><span className="coin_text"> {currentCoin.Name}</span></th>
+										<th><img src={`https://www.cryptocompare.com${currentCalcCoin.ImageUrl}`} alt={currentCalcCoin.Name} style={{width:"40px", height:"40px"}}/><span className="coin_text"> {currentCalcCoin.Name}</span></th>
 										<th>OPEN PRICE(EUR)</th> 
 										<th>HIGH PRICE(EUR)</th>
 										<th>LOW PRICE(EUR)</th> 
